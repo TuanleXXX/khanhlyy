@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon QR Effect</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+        }
+
+        .neon-text {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FF69B4;
+            text-shadow: 0 0 5px #FF69B4, 0 0 10px #FF69B4, 0 0 20px #FF69B4, 0 0 40px #FF1493, 0 0 80px #FF1493;
+        }
+
+        .qr-code {
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px #FF69B4);
+            }
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 20px #FF1493);
+            }
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            color: #FF6347;
+            animation: float 4s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-200px);
+                opacity: 0;
+            }
+        }
+
+        .floating-text {
+            position: absolute;
+            font-size: 1.5rem;
+            color: #FF69B4;
+            font-weight: bold;
+            animation: floatText 4s infinite ease-in-out;
+            pointer-events: none;
+            text-shadow: 0 0 10px #fff, 0 0 20px #FF69B4;
+        }
+
+        @keyframes floatText {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-200px);
+                opacity: 0;
+            }
+        }
+
+        .floating {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 2rem;
+            color: #ff69b4;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            text-shadow: 0 0 10px #fff, 0 0 20px #ff69b4, 0 0 40px #ff1493;
+            opacity: 0.8;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .heart {
+            color: #ff3333;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #fff, 0 0 20px #ff3333;
+        }
+
+        #bg-move {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(-45deg, #000, #ff69b4, #000, #1e90ff);
+            background-size: 400% 400%;
+            pointer-events: none;
+        }
+        @keyframes gradientMove {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .star {
+            position: fixed;
+            z-index: -1;
+            border-radius: 50%;
+            background: white;
+            opacity: 0.7;
+            pointer-events: none;
+            box-shadow: 0 0 6px 2px #fff, 0 0 20px 4px #ff69b4;
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle {
+            from { opacity: 0.5; }
+            to   { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="bg-move"></div>
+    <div class="container">
+        <div class="neon-text">Làm người yêu tớ nha</div>
+        <img id="qr" class="qr-code" src="c:\Users\LAPTOP36\OneDrive\Pictures\494571174_617112298051101_8933557537083634663_n.jpg" alt="QR Code" style="position:absolute; left:50%; top:40%; transform:translate(-50%, 0); cursor:grab;">
+    </div>
+
+    <!-- Floating hearts -->
+    <div class="heart" style="top: 70%; left: 40%; animation-delay: 0s;">❤️</div>
+    <div class="heart" style="top: 80%; left: 60%; animation-delay: 1s;">❤️</div>
+    <div class="heart" style="top: 90%; left: 50%; animation-delay: 2s;">❤️</div>
+    <div class="heart" style="top: 75%; left: 70%; animation-delay: 1.5s;">❤️</div>
+
+    <!-- Floating texts -->
+    <div class="floating-text" style="top: 85%; left: 30%; animation-delay: 0s;">I Love You</div>
+    <div class="floating-text" style="top: 90%; left: 60%; animation-delay: 1s;">Happy Anniversary</div>
+    <div class="floating-text" style="top: 95%; left: 50%; animation-delay: 2s;">Forever</div>
+
+    <script>
+const qr = document.getElementById('qr');
+let isDragging = false;
+let offsetX, offsetY;
+
+qr.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    qr.style.cursor = 'grabbing';
+    // Lấy vị trí chuột so với góc trên bên trái của ảnh
+    offsetX = e.clientX - qr.getBoundingClientRect().left;
+    offsetY = e.clientY - qr.getBoundingClientRect().top;
+});
+
+document.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+        qr.style.left = (e.clientX - offsetX) + 'px';
+        qr.style.top = (e.clientY - offsetY) + 'px';
+        qr.style.transform = 'none';
+    }
+});
+
+document.addEventListener('mouseup', function() {
+    isDragging = false;
+    qr.style.cursor = 'grab';
+});
+
+const texts = [
+    "Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu",
+    "Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu",
+    "Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu",
+    "Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu",
+    "Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu",
+    "Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu","Tớ yêu cậu"
+];
+const hearts = ["❤️","💖","💕","💗","💓"];
+
+function randomBetween(a, b) {
+    return a + Math.random() * (b - a);
+}
+
+function createFloatingText() {
+    const isHeart = Math.random() < 0.3;
+    const el = document.createElement("div");
+    el.className = "floating";
+    if (isHeart) {
+        el.classList.add("heart");
+        el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    } else {
+        el.textContent = texts[Math.floor(Math.random() * texts.length)];
+    }
+    el.style.left = randomBetween(0, window.innerWidth - 200) + "px";
+    el.style.top = window.innerHeight + "px";
+    el.style.opacity = randomBetween(0.7, 1);
+    el.style.fontSize = randomBetween(1.2, 2.5) + "rem";
+    // Thêm hiệu ứng nghiêng (skew) vào transform
+    const rotate = randomBetween(-20, 20);
+    const skew = randomBetween(-30, 30); // Góc nghiêng
+    el.style.transform = `rotate(${rotate}deg) skewX(${skew}deg)`;
+    document.body.appendChild(el);
+
+    // Animate
+    const duration = randomBetween(4000, 7000);
+    const finalTop = -100; // Bay lên hết màn hình (ra ngoài)
+    el.animate([
+        { transform: el.style.transform, top: el.style.top, opacity: el.style.opacity },
+        { transform: el.style.transform, top: finalTop + "px", opacity: 0 }
+    ], {
+        duration: duration,
+        easing: "ease-in"
+    });
+
+    setTimeout(() => el.remove(), duration);
+}
+
+// Tạo nhiều dòng chữ và tim liên tục
+setInterval(createFloatingText, 300);
+
+const bg = document.getElementById('bg-move');
+
+// Hàm đổi hướng gradient theo vị trí chuột/tay
+function updateGradientDirection(x, y) {
+    // Tính góc dựa trên vị trí chuột/tay
+    const angle = Math.atan2(y - window.innerHeight/2, x - window.innerWidth/2) * 180 / Math.PI;
+    bg.style.background = `linear-gradient(${angle}deg, #000, #ff69b4, #000, #1e90ff)`;
+}
+
+// Mouse
+document.addEventListener('mousemove', e => updateGradientDirection(e.clientX, e.clientY));
+// Touch
+document.addEventListener('touchmove', e => {
+    if (e.touches.length > 0) {
+        updateGradientDirection(e.touches[0].clientX, e.touches[0].clientY);
+    }
+});
+
+// Tạo hiệu ứng sao lấp lánh
+function createStars(numStars = 60) {
+    for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 2 + 1; // Kích thước sao
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${Math.random() * 100}vw`;
+        star.style.top = `${Math.random() * 100}vh`;
+        star.style.opacity = Math.random() * 0.5 + 0.5;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        document.body.appendChild(star);
+    }
+}
+createStars();
+
+function updateTextSkew(x, y) {
+    // Tính góc nghiêng dựa trên vị trí chuột/tay
+    const maxSkew = 30;
+    const percentX = (x / window.innerWidth - 0.5) * 2; // -1 đến 1
+    const skew = percentX * maxSkew;
+
+    // Lặp qua tất cả chữ nổi và tim nổi
+    document.querySelectorAll('.floating, .heart').forEach(el => {
+        // Giữ lại các transform khác (nếu có)
+        let rotate = 0;
+        // Nếu có rotate cũ thì lấy ra
+        const match = el.style.transform.match(/rotate\(([-\d.]+)deg\)/);
+        if (match) rotate = parseFloat(match[1]);
+        el.style.transform = `rotate(${rotate}deg) skewX(${skew}deg)`;
+    });
+}
+
+// Mouse
+document.addEventListener('mousemove', e => {
+    updateGradientDirection(e.clientX, e.clientY);
+    updateTextSkew(e.clientX, e.clientY);
+});
+// Touch
+document.addEventListener('touchmove', e => {
+    if (e.touches.length > 0) {
+        updateGradientDirection(e.touches[0].clientX, e.touches[0].clientY);
+        updateTextSkew(e.touches[0].clientX, e.touches[0].clientY);
+    }
+});
+    </script>
+</body>
+</html>
